@@ -1,0 +1,66 @@
+body {
+  width: 10rem;
+  padding: 0 1rem 1rem 1rem;
+}
+
+h2 {
+  color: #5a57bf;
+}
+
+.option-toggle {
+  display: table;
+}
+
+.option-toggle .text {
+  font-size: 0.8rem;
+  font-weight: 300;
+  width: 10rem;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.toggle {
+  display: table-cell;
+  vertical-align: middle;
+  line-height: 0;
+  font-size: 0;
+}
+
+.common.toggle-switch {
+  height: 1.5rem;
+  width: 3.0rem;
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.common.toggle-switch .fill {
+  margin-top: .25rem;
+  height: 1.0rem;
+  width: 100%;
+  background: #dee2e6;
+  border-radius: 1rem;
+  transition: all .15s ease-in-out;
+}
+
+.common.toggle-switch.checked .fill {
+  background: #5a57bf;
+}
+
+.common.toggle-switch .circle {
+  transition: all .15s ease-in-out;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 100%;
+  background: #fff;
+  position: absolute;
+  top: 0;
+  box-shadow: 0 1.5px 4px rgb(0 0 0 / 24%), 0 1.5px 6px rgb(0 0 0 / 12%);
+  left: 0;
+}
+
+.common.toggle-switch.checked .circle {
+  box-shadow: 0 1.5px 4px rgb(0 0 0 / 24%), 0 1.5px 6px rgb(0 0 0 / 12%);
+  left: 1.5rem;
+  background: #fff;
+}
