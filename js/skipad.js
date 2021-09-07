@@ -222,6 +222,24 @@
   }
 
   /**
+   * Check if this tab window url is https://laftel.net
+   */
+  function isInLaftel() {
+    if (isInIframe()) {
+      return document.referrer.match(/.*:\/\/.*laftel.net\/.*/);
+    }else{
+      return document.URL.match(/.*:\/\/.*laftel.net\/.*/);
+    }
+  }
+
+  /**
+   * Check if this script in iframe.
+   */
+  function isInIframe() {
+    return window.location != window.parent.location;
+  }
+
+  /**
    * We have two implementations to check for the skip ad buttons: one is based on
    * MutationObserver, that is only triggered when the video-player is updated in
    * the page; second is a simple poll that constantly checks for the existence of
@@ -255,6 +273,8 @@
    * main routine
    */
   (async () => {
+    if (!isInLaftel()) return;
+
     // dynamic import
     const src = chrome.runtime.getURL('js/storage.js');
     getDataInStorage = (await import(src)).getDataInStorage;
