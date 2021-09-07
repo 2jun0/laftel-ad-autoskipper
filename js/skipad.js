@@ -146,7 +146,6 @@
    */
   function checkAndMuteAdVideos(mute) {
     existingElements(AD_VIDEO_SELECTOR_LIST).forEach(video => {
-      console.log(video, mute);
       video.muted = mute;
     })
   }
@@ -263,5 +262,5 @@
     initOptions();
     initTimeout();
   })();
-  
+
 })();
