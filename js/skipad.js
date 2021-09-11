@@ -282,5 +282,4 @@
     initOptions();
     initTimeout();
   })();
-
 })();
