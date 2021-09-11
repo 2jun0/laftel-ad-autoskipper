@@ -3,6 +3,8 @@
 
   var SELECTOR = {
     BTN_LATER: 'button.MembershipSuggestDialog__Button-sc-1bcpbpm-6.bZbLzl', // Close google ad button
+
+    BTN_SKIP_GOOGLE_AD_WRAPPER: 'div.videoAdUiBottomBar',
     BTN_SKIP_GOOGLE_AD: 'button.videoAdUiSkipButton', // 나중에 button in laftel suggest dialog
 
     VIDEO_WRAPPER: 'div.player div.video',
@@ -182,12 +184,12 @@
     if (!('MutationObserver' in window)) {
       return false;
     }
-    var videoWrapper = (function(nodeList) {
-      return nodeList && nodeList[0];
-    })(document.querySelector(SELECTOR.VIDEO_WRAPPER));
 
-    if (!videoWrapper) {
-      // When inserting this script into google ad iframe, there is no laftel player
+    var observedEl = (function(nodeList) {
+      return nodeList && nodeList[0];
+    })(existingElements([SELECTOR.VIDEO_WRAPPER, SELECTOR.BTN_SKIP_GOOGLE_AD_WRAPPER]));
+
+    if (!observedEl) {
       return false;
     }
 
@@ -196,7 +198,7 @@
       checkAndMuteAdVideos(option.muteAd);
     });
 
-    observer.observe(videoWrapper, { childList: true, subtree: true });
+    observer.observe(observedEl, { childList: true, subtree: true });
 
     clearTimeout(timeoutId); // Just for good measure
 
