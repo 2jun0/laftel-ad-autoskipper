@@ -9,4 +9,4 @@
 - 광고 음소거 기능(설정창에서 on/off)
 
 ## 다운로드
-[크롬 앱스토어](https://chrome.google.com/webstore/detail/라프텔-광고-스키퍼/dcpckjplmdcgdbapaepejenmkknkoimg)
+[크롬 웹스토어](https://chrome.google.com/webstore/detail/라프텔-광고-스키퍼/dcpckjplmdcgdbapaepejenmkknkoimg)
