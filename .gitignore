@@ -1,2 +1,4 @@
-
-laftel-ad-autoskipper.zip
+.vscode
+*.zip
+*.crx
+*.pem

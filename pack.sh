@@ -1,0 +1,1 @@
+bz.exe c -r -ex:*.sh ./laftel-ad-autoskipper.zip ./*
