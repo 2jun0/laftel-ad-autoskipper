@@ -1,0 +1,66 @@
+body {
+  width: 170px;
+  padding: 0 10px 10px 10px;
+}
+
+.title {
+  font-weight: bold;
+  color: #5a57bf;
+}
+
+.option-toggle {
+  display: flex;
+}
+
+.option-toggle .label {
+  font-size: 0.8rem;
+  font-weight: 300;
+  width: 10rem;
+  align-items: center;
+}
+
+.toggle {
+  margin-left: auto;
+  align-items: center;
+  line-height: 0;
+  font-size: 0;
+}
+
+.toggle-switch {
+  height: 1.5rem;
+  width: 3.0rem;
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.toggle-switch .fill {
+  margin-top: .25rem;
+  height: 1.0rem;
+  width: 100%;
+  background: #dee2e6;
+  border-radius: 1rem;
+  transition: all .15s ease-in-out;
+}
+
+.toggle-switch.checked .fill {
+  background: #5a57bf;
+}
+
+.toggle-switch .circle {
+  transition: all .15s ease-in-out;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 100%;
+  background: #fff;
+  position: absolute;
+  top: 0;
+  box-shadow: 0 1.5px 4px rgb(0 0 0 / 24%), 0 1.5px 6px rgb(0 0 0 / 12%);
+  left: 0;
+}
+
+.toggle-switch.checked .circle {
+  box-shadow: 0 1.5px 4px rgb(0 0 0 / 24%), 0 1.5px 6px rgb(0 0 0 / 12%);
+  left: 1.5rem;
+  background: #fff;
+}
