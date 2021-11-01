@@ -1,32 +1,32 @@
 body {
-  width: 10rem;
-  padding: 0 1rem 1rem 1rem;
+  width: 170px;
+  padding: 0 10px 10px 10px;
 }
 
-h2 {
+.title {
+  font-weight: bold;
   color: #5a57bf;
 }
 
 .option-toggle {
-  display: table;
+  display: flex;
 }
 
-.option-toggle .text {
+.option-toggle .label {
   font-size: 0.8rem;
   font-weight: 300;
   width: 10rem;
-  display: table-cell;
-  vertical-align: middle;
+  align-items: center;
 }
 
 .toggle {
-  display: table-cell;
-  vertical-align: middle;
+  margin-left: auto;
+  align-items: center;
   line-height: 0;
   font-size: 0;
 }
 
-.common.toggle-switch {
+.toggle-switch {
   height: 1.5rem;
   width: 3.0rem;
   position: relative;
@@ -34,7 +34,7 @@ h2 {
   cursor: pointer;
 }
 
-.common.toggle-switch .fill {
+.toggle-switch .fill {
   margin-top: .25rem;
   height: 1.0rem;
   width: 100%;
@@ -43,11 +43,11 @@ h2 {
   transition: all .15s ease-in-out;
 }
 
-.common.toggle-switch.checked .fill {
+.toggle-switch.checked .fill {
   background: #5a57bf;
 }
 
-.common.toggle-switch .circle {
+.toggle-switch .circle {
   transition: all .15s ease-in-out;
   width: 1.5rem;
   height: 1.5rem;
@@ -59,7 +59,7 @@ h2 {
   left: 0;
 }
 
-.common.toggle-switch.checked .circle {
+.toggle-switch.checked .circle {
   box-shadow: 0 1.5px 4px rgb(0 0 0 / 24%), 0 1.5px 6px rgb(0 0 0 / 12%);
   left: 1.5rem;
   background: #fff;
