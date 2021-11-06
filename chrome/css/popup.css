@@ -28,19 +28,19 @@ body {
 
 .toggle-switch {
   height: 1.5rem;
-  width: 3.0rem;
+  width: 3rem;
   position: relative;
   display: inline-block;
   cursor: pointer;
 }
 
 .toggle-switch .fill {
-  margin-top: .25rem;
-  height: 1.0rem;
+  margin-top: 0.25rem;
+  height: 1rem;
   width: 100%;
   background: #dee2e6;
   border-radius: 1rem;
-  transition: all .15s ease-in-out;
+  transition: all 0.15s ease-in-out;
 }
 
 .toggle-switch.checked .fill {
@@ -48,7 +48,7 @@ body {
 }
 
 .toggle-switch .circle {
-  transition: all .15s ease-in-out;
+  transition: all 0.15s ease-in-out;
   width: 1.5rem;
   height: 1.5rem;
   border-radius: 100%;
