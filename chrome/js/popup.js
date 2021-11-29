@@ -1,15 +1,15 @@
-const muteAdSwitch = document.getElementById("mute-ad");
+const muteAdSwitch = document.getElementById('mute-ad');
 
 function sendMessage(message, callback) {
-  chrome.tabs.query({}, (tabs) => {
-    tabs.forEach((tab) => {
+  chrome.tabs.query({}, tabs => {
+    tabs.forEach(tab => {
       chrome.tabs.sendMessage(tab.id, message, callback);
     });
   });
 }
 
 // toggle mute ad
-muteAdSwitch.addEventListener("click", (event) => {
+muteAdSwitch.addEventListener('click', event => {
   if (isToogledSwitch(muteAdSwitch)) {
     saveOption({ muteAd: true });
     sendMessage({ muteAd: true });
@@ -26,7 +26,7 @@ function saveOption(dict) {
   chrome.storage.local.set(dict);
 }
 function loadOptions(callback) {
-  chrome.storage.local.get(["muteAd"], (data) => {
+  chrome.storage.local.get(['muteAd'], data => {
     callback(data);
   });
 }
@@ -34,7 +34,7 @@ function loadOptions(callback) {
 /**
  * main routine
  */
-loadOptions((data) => {
-  if ("muteAd" in data) toggleSwitch(muteAdSwitch);
+loadOptions(data => {
+  if ('muteAd' in data) toggleSwitch(muteAdSwitch);
   else unToggleSwitch(muteAdSwitch);
 });

@@ -5,7 +5,7 @@ chrome.runtime.onInstalled.addListener(() => {
       {
         conditions: [
           new chrome.declarativeContent.PageStateMatcher({
-            pageUrl: { hostEquals: "laftel.net", schemes: ["https", "http"] },
+            pageUrl: { hostEquals: 'laftel.net', schemes: ['https', 'http'] },
           }),
         ],
         actions: [new chrome.declarativeContent.ShowPageAction()],

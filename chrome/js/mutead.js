@@ -1,7 +1,7 @@
 var SELECTOR = {
-  BTN_LATER: "button.MembershipSuggestDialog__Button-sc-1bcpbpm-6.bZbLzl", // Close google ad button
+  BTN_LATER: 'button.MembershipSuggestDialog__Button-sc-1bcpbpm-6.bZbLzl', // Close google ad button
 
-  VIDEO_WRAPPER: "div.player div.video",
+  VIDEO_WRAPPER: 'div.player div.video',
   VIDEO_LAFTEL_AD: 'div[class^="LaftelAdsVideo"]>video',
   VIDEO_GOOGLE_AD: 'div[class^="GoogleIMA"] video',
 };
@@ -19,19 +19,19 @@ var option = {
 
 /** load options from browser storage */
 function loadOptions(callback) {
-  chrome.storage.local.get(["muteAd"], (data) => {
+  chrome.storage.local.get(['muteAd'], data => {
     callback(data);
   });
 }
 
 /** Triggers a click event on the given DOM element.*/
 function triggerClick(el) {
-  var etype = "click";
+  var etype = 'click';
 
-  if (typeof el.fireEvent === "function") {
-    el.fireEvent("on" + etype);
-  } else if (typeof el.dispatchEvent === "function") {
-    var evObj = document.createEvent("Events");
+  if (typeof el.fireEvent === 'function') {
+    el.fireEvent('on' + etype);
+  } else if (typeof el.dispatchEvent === 'function') {
+    var evObj = document.createEvent('Events');
     evObj.initEvent(etype, true, false);
     el.dispatchEvent(evObj);
   }
@@ -39,11 +39,9 @@ function triggerClick(el) {
 
 /** Loops over all the videos that need to be muted. */
 function checkAndMuteAdVideos(mute) {
-  document
-    .querySelectorAll(AD_VIDEO_SELECTOR_LIST.join(","))
-    .forEach((video) => {
-      video.muted = mute;
-    });
+  document.querySelectorAll(AD_VIDEO_SELECTOR_LIST.join(',')).forEach(video => {
+    video.muted = mute;
+  });
 }
 
 /** Check if ther later button exists then, click the later button. */
@@ -54,7 +52,7 @@ function checkAndLaterBtn() {
 
 /** Init the ad video observer */
 function initObserver() {
-  if (!("MutationObserver" in window)) return false;
+  if (!('MutationObserver' in window)) return false;
 
   var videoWrapper = document.querySelector(SELECTOR.VIDEO_WRAPPER);
 
@@ -90,18 +88,18 @@ function initTimeout() {
 /** Check if this tab window url is https://laftel.net and this window is the laftel */
 if (
   /.*:\/\/.*laftel.net\/.*/.test(document.referrer || document.URL) &&
-  window.location.hostname == "laftel.net"
+  window.location.hostname == 'laftel.net'
 ) {
   // option update handlers
   chrome.runtime.onMessage.addListener((req, sender, sendRes) => {
-    if ("muteAd" in req) {
-      option.muteAd = req["muteAd"];
+    if ('muteAd' in req) {
+      option.muteAd = req['muteAd'];
       checkAndMuteAdVideos(option.muteAd);
     }
   });
 
-  loadOptions((data) => {
-    if ("muteAd" in data) option.muteAd = data["muteAd"];
+  loadOptions(data => {
+    if ('muteAd' in data) option.muteAd = data['muteAd'];
   });
 
   initTimeout();
