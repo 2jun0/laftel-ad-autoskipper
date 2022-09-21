@@ -45,8 +45,6 @@ const initObserver = () => {
     SELECTOR.VIDEO_LAFTEL_SERVICE,
   );
 
-  console.log(videoLaftelServiceEl);
-
   if (!videoLaftelServiceEl) return false;
 
   observer = new MutationObserver(() => {
