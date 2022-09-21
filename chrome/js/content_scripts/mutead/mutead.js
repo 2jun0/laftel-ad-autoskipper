@@ -1,4 +1,5 @@
 import { triggerClick } from '../utils/click.js';
+import { loadOptions } from '../utils/options.js';
 
 const SELECTOR = {
   VIDEO_LAFTEL_SERVICE: 'video[data-cy="video"]',
@@ -14,17 +15,12 @@ const AD_VIDEO_SELECTOR_LIST = [
   SELECTOR.VIDEO_AD,
 ];
 
-var intervalId;
+var intervalObserverId;
+var intervalMuteAdId;
+var observer;
 
 var option = {
   muteAd: true,
-};
-
-/** load options from browser storage */
-const loadOptions = callback => {
-  chrome.storage.local.get(['muteAd'], data => {
-    callback(data);
-  });
 };
 
 /** Loops over all the videos that need to be muted. */
@@ -53,29 +49,46 @@ const initObserver = () => {
 
   if (!videoLaftelServiceEl) return false;
 
-  let observer = new MutationObserver(() => {
-    tryMuteAdVideos(option.muteAd);
+  observer = new MutationObserver(() => {
     tryClickLaterBtn();
   });
 
   let videoWapperEl = videoLaftelServiceEl.parentElement;
-  observer.observe(videoWapperEl, { childList: true, subtree: true });
+  observer.observe(videoWapperEl, { childList: true });
+
+  // Free observer when document unload
+  window.addEventListener('beforeunload', () => {
+    if (observer) clearInterval(observer);
+  });
 
   return true;
 };
 
 /** Loop until the observer is successfully created. */
-const initInterval = () => {
-  intervalId = setInterval(() => {
+const initWatingObserverInterval = () => {
+  intervalObserverId = setInterval(() => {
     if (initObserver()) {
-      console.log(123);
       // Stop the polling as the observer is set up.
-      clearInterval(intervalId);
+      clearInterval(intervalObserverId);
+      intervalObserverId = null;
     }
+  }, 500);
+
+  // Free interval when document unload
+  window.addEventListener('beforeunload', () => {
+    if (intervalObserverId) clearInterval(intervalObserverId);
+  });
+};
+
+/** Loop try to mute ad */
+const initMuteAdInterval = () => {
+  intervalMuteAdId = setInterval(() => {
+    tryMuteAdVideos(option.muteAd);
   }, 500);
 };
 
-const initOption = () => {
+/** Initialize option's relatives */
+const initOption = async () => {
   // option update handlers
   chrome.runtime.onMessage.addListener((req, sender, sendRes) => {
     if ('muteAd' in req) {
@@ -84,18 +97,17 @@ const initOption = () => {
     }
   });
 
-  loadOptions(data => {
-    if ('muteAd' in data) option.muteAd = data['muteAd'];
-  });
+  option.muteAd = await loadOptions('muteAd');
 };
 
-export const main = () => {
+export const main = async () => {
   /** Check if this tab window url is https://laftel.net and this window is the laftel */
   if (
     /.*:\/\/.*laftel.net\/.*/.test(document.referrer || document.URL) &&
     window.location.hostname == 'laftel.net'
   ) {
-    initOption();
-    initInterval();
+    await initOption();
+    initWatingObserverInterval();
+    initMuteAdInterval();
   }
 };

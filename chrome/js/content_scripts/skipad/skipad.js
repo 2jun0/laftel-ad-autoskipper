@@ -6,6 +6,7 @@ const SELECTOR = {
 };
 
 var intervalId;
+var observer;
 
 /** Check if the skip button exists then, click the skip button. */
 const tryClickSkipBtn = () => {
@@ -23,11 +24,16 @@ const initObserver = () => {
 
   if (!skipBtnWapper) return false;
 
-  let observer = new MutationObserver(() => {
+  observer = new MutationObserver(() => {
     tryClickSkipBtn();
   });
 
   observer.observe(skipBtnWapper, { childList: true, subtree: true });
+
+  // Free observer when document unload
+  window.addEventListener('beforeunload', () => {
+    if (observer) clearInterval(observer);
+  });
 
   return true;
 };
@@ -40,6 +46,11 @@ const initInterval = () => {
       clearInterval(intervalId);
     }
   }, 500);
+
+  // Free interval when document unload
+  window.addEventListener('beforeunload', () => {
+    if (intervalId) clearInterval(intervalId);
+  });
 };
 
 export const main = () => {
