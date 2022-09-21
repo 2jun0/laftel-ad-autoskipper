@@ -23,3 +23,7 @@ But it is deprecated method so, see this
 ## MutationObserver
 
 - https://inpa.tistory.com/entry/JS-%F0%9F%93%9A-MutationObserver-DOM%EC%9D%98-%EB%B3%80%ED%99%94%EB%A5%BC-%EA%B0%90%EC%8B%9C#MutationObserver_%EC%BD%9C%EB%B0%B1_%EC%9D%B8%EC%9E%90
+
+## chrome.tabs.sendMessage의 Could not establish connection. Receiving end does not exist 오류
+
+- https://stackoverflow.com/questions/42147966/browser-tabs-sendmessage-error-receiving-end-does-not-exist
