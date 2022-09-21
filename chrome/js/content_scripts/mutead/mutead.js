@@ -1,5 +1,5 @@
-import { triggerClick } from '../utils/click.js';
-import { loadOptions } from '../utils/options.js';
+import { triggerClick } from '../../utils/click.js';
+import { loadOption } from '../../utils/options.js';
 
 const SELECTOR = {
   VIDEO_LAFTEL_SERVICE: 'video[data-cy="video"]',
@@ -16,7 +16,6 @@ const AD_VIDEO_SELECTOR_LIST = [
 ];
 
 var intervalObserverId;
-var intervalMuteAdId;
 var observer;
 
 var option = {
@@ -45,11 +44,10 @@ const initObserver = () => {
     SELECTOR.VIDEO_LAFTEL_SERVICE,
   );
 
-  console.log(videoLaftelServiceEl);
-
   if (!videoLaftelServiceEl) return false;
 
   observer = new MutationObserver(() => {
+    tryMuteAdVideos(option.muteAd);
     tryClickLaterBtn();
   });
 
@@ -80,13 +78,6 @@ const initWatingObserverInterval = () => {
   });
 };
 
-/** Loop try to mute ad */
-const initMuteAdInterval = () => {
-  intervalMuteAdId = setInterval(() => {
-    tryMuteAdVideos(option.muteAd);
-  }, 500);
-};
-
 /** Initialize option's relatives */
 const initOption = async () => {
   // option update handlers
@@ -97,7 +88,7 @@ const initOption = async () => {
     }
   });
 
-  option.muteAd = await loadOptions('muteAd');
+  option.muteAd = await loadOption(['muteAd']);
 };
 
 export const main = async () => {
@@ -108,6 +99,5 @@ export const main = async () => {
   ) {
     await initOption();
     initWatingObserverInterval();
-    initMuteAdInterval();
   }
 };

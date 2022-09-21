@@ -1,4 +1,4 @@
-import { triggerClick } from '../utils/click.js';
+import { triggerClick } from '../../utils/click.js';
 
 const SELECTOR = {
   BTN_SKIP_GOOGLE_AD_WRAPPER: 'div.videoAdUiBottomBar',
