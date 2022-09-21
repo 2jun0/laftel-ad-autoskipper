@@ -3,29 +3,22 @@
   "short_name": "라프텔 광고 스키퍼",
   "description": "라프텔의 광고 스킵버튼을 자동으로 눌러주는 확장프로그램 입니다.(광고 차단이 아님)",
   "manifest_version": 2,
-  "version": "1.1.0",
+  "version": "1.2.3",
   "author": "2jun0",
   "homepage_url": "https://github.com/2jun0/laftel-ad-autoskipper",
   "content_scripts": [
     {
-      "matches": ["*://*.laftel.net/*"],
-      "js": ["js/mutead.js"],
+      "matches": ["*://*.laftel.net/player/*"],
+      "js": ["js/content_scripts/mutead/module-loader.js"],
       "run_at": "document_end"
     },
     {
       "matches": ["*://*.googleapis.com/*"],
-      "js": ["js/skipad.js"],
+      "js": ["js/content_scripts/skipad/module-loader.js"],
       "run_at": "document_end",
       "all_frames": true
     }
   ],
-  "browser_action": {
-    "default_title": "라프텔 광고 스키퍼",
-    "default_popup": "html/popup.html",
-    "default_icon": {
-      "48": "icon/logo.png"
-    }
-  },
   "permissions": ["storage", "tabs"],
   "icons": {
     "48": "icon/logo.png"

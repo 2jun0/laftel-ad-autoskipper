@@ -25,9 +25,13 @@ var option = {
 
 /** Loops over all the videos that need to be muted. */
 const tryMuteAdVideos = muted => {
-  document.querySelectorAll(AD_VIDEO_SELECTOR_LIST.join(',')).forEach(video => {
-    video.muted = muted;
-  });
+  // document.querySelectorAll(AD_VIDEO_SELECTOR_LIST.join(',')).forEach(video => {
+  //   if (muted) {
+  //     if (video.volume != 0) video.volume = 0;
+  //   } else {
+  //     if (video.volume == 0) video.volume = 1;
+  //   }
+  // });
 };
 
 /** Check if ther later button exists then, click the later button. */
@@ -44,8 +48,6 @@ const initObserver = () => {
   let videoLaftelServiceEl = document.querySelector(
     SELECTOR.VIDEO_LAFTEL_SERVICE,
   );
-
-  console.log(videoLaftelServiceEl);
 
   if (!videoLaftelServiceEl) return false;
 
@@ -87,6 +89,8 @@ const initWatingObserverInterval = () => {
 /** Loop try to mute ad */
 const initMuteAdInterval = () => {
   intervalMuteAdId = setInterval(() => {
+    // firefox mutationObserver is unable so, use interval
+    tryClickLaterBtn();
     tryMuteAdVideos(option.muteAd);
   }, 100);
 };
@@ -111,7 +115,9 @@ export const main = async () => {
     window.location.hostname == 'laftel.net'
   ) {
     await initOption();
-    initWatingObserverInterval();
-    initMuteAdInterval();
+    setTimeout(() => {
+      initWatingObserverInterval();
+      initMuteAdInterval();
+    }, 500);
   }
 };
