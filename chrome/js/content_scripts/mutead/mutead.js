@@ -16,6 +16,7 @@ const AD_VIDEO_SELECTOR_LIST = [
 ];
 
 var intervalObserverId;
+var intervalMuteAdId;
 var observer;
 
 var option = {
@@ -44,11 +45,13 @@ const initObserver = () => {
     SELECTOR.VIDEO_LAFTEL_SERVICE,
   );
 
+  console.log(videoLaftelServiceEl);
+
   if (!videoLaftelServiceEl) return false;
 
   observer = new MutationObserver(() => {
-    tryMuteAdVideos(option.muteAd);
     tryClickLaterBtn();
+    tryMuteAdVideos(option.muteAd);
   });
 
   let videoWapperEl = videoLaftelServiceEl.parentElement;
@@ -78,6 +81,13 @@ const initWatingObserverInterval = () => {
   });
 };
 
+/** Loop try to mute ad */
+const initMuteAdInterval = () => {
+  intervalMuteAdId = setInterval(() => {
+    tryMuteAdVideos(option.muteAd);
+  }, 100);
+};
+
 /** Initialize option's relatives */
 const initOption = async () => {
   // option update handlers
@@ -99,5 +109,6 @@ export const main = async () => {
   ) {
     await initOption();
     initWatingObserverInterval();
+    initMuteAdInterval();
   }
 };
