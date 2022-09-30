@@ -42,11 +42,14 @@ const tryMuteAdVideos = muted => {
   let tryCnt = 50;
 
   intervalMuteAdId = setInterval(() => {
+    tryCnt--;
+
     const adLikeVideos = getAdLikeVideos();
-    printLog('[laftel-ad-autoskipper] try found vidoes ... ');
+    printLog('try found vidoes ... ');
 
     if (adLikeVideos) {
-      printLog('[laftel-ad-autoskipper] 광고 감지');
+      printLog('광고 감지');
+      tryCnt = 0;
 
       adLikeVideos.forEach(video => {
         if (video.readyState == HTMLMediaElement.HAVE_ENOUGH_DATA) {
@@ -57,16 +60,12 @@ const tryMuteAdVideos = muted => {
           });
         }
       });
-
-      if (intervalMuteAdId) {
-        clearInterval(intervalMuteAdId);
-        intervalMuteAdId = null;
-      }
     }
 
-    if (tryCnt == 0 && intervalMuteAdId) {
-      intervalMuteAdId = null;
+    // Free
+    if (tryCnt <= 0 && intervalMuteAdId) {
       clearInterval(intervalMuteAdId);
+      intervalMuteAdId = null;
     }
   }, 50);
 };
@@ -82,15 +81,15 @@ const tryClickLaterBtn = () => {
 
     for (let btn of document.querySelectorAll('button')) {
       if (btn.innerHTML == '나중에') {
-        triggerClick(btn);
-
         tryCnt = 0;
 
+        triggerClick(btn);
         break;
       }
     }
 
-    if (tryCnt == 0 && intervalWaitingLaterBtnId) {
+    // Free
+    if (tryCnt <= 0 && intervalWaitingLaterBtnId) {
       clearInterval(intervalMuteAdId);
       intervalWaitingLaterBtnId = null;
     }
@@ -110,16 +109,19 @@ const initLaftelVideoListener = () => {
 
     // 동영상이 일시중지 될때 광고 탐색
     videoLaftelServiceEl.addEventListener('pause', () => {
+      printLog('pause');
       tryMuteAdVideos(options.muteAd);
     });
 
     // 동영상이 로드될 때 광고 탐색
     videoLaftelServiceEl.addEventListener('loadeddata', () => {
+      printLog('loadeddata');
       tryMuteAdVideos(options.muteAd);
     });
 
     // 동영상이 다시 실행할때 종료
     videoLaftelServiceEl.addEventListener('play', () => {
+      printLog('play');
       if (intervalMuteAdId) {
         clearInterval(intervalMuteAdId);
         intervalMuteAdId = null;
