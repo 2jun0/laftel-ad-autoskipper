@@ -132,6 +132,12 @@ const initLaftelVideoListener = () => {
     if (videoLaftelServiceEl.paused) {
       tryMuteAdVideos(options.muteAd);
     }
+
+    // Free
+    if (intervalWaitingLaftelVideoId) {
+      clearInterval(intervalWaitingLaftelVideoId);
+      intervalWaitingLaftelVideoId = null;
+    }
   });
 
   // Free intervals when document unload
