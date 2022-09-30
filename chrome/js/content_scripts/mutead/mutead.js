@@ -108,13 +108,13 @@ const initLaftelVideoListener = () => {
 
     if (!videoLaftelServiceEl) return;
 
-    if (intervalWaitingLaftelVideoId) {
-      clearInterval(intervalWaitingLaftelVideoId);
-      intervalWaitingLaftelVideoId = null;
-    }
-
-    //
+    // 동영상이 일시중지 될때 광고 탐색
     videoLaftelServiceEl.addEventListener('pause', () => {
+      tryMuteAdVideos(options.muteAd);
+    });
+
+    // 동영상이 로드될 때 광고 탐색
+    videoLaftelServiceEl.addEventListener('loadeddata', () => {
       tryMuteAdVideos(options.muteAd);
     });
 
@@ -128,14 +128,27 @@ const initLaftelVideoListener = () => {
       tryClickLaterBtn();
     });
 
-    // 동영상이 로드될 때 실행
-    videoLaftelServiceEl.addEventListener('loadeddata', () => {
-      tryMuteAdVideos(options.muteAd);
-    });
-
     // 맨 처음에 광고가 나오면 실행
     if (videoLaftelServiceEl.paused) {
       tryMuteAdVideos(options.muteAd);
+    }
+  });
+
+  // Free intervals when document unload
+  window.addEventListener('beforeunload', () => {
+    if (intervalMuteAdId) {
+      clearInterval(intervalMuteAdId);
+      intervalMuteAdId = null;
+    }
+
+    if (intervalWaitingLaftelVideoId) {
+      clearInterval(intervalWaitingLaftelVideoId);
+      intervalWaitingLaftelVideoId = null;
+    }
+
+    if (intervalWaitingLaterBtnId) {
+      clearInterval(intervalWaitingLaterBtnId);
+      intervalWaitingLaterBtnId = null;
     }
   });
 };
