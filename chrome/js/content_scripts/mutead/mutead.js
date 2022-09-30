@@ -1,4 +1,5 @@
 import { triggerClick } from '../../utils/click.js';
+import { printLog } from '../../utils/log.js';
 import { loadOption } from '../../utils/options.js';
 
 const SELECTOR = {
@@ -9,84 +10,134 @@ const SELECTOR = {
   VIDEO_AD: 'video[title="Advertisement"]',
 };
 
-const AD_VIDEO_SELECTOR_LIST = [
-  SELECTOR.VIDEO_GOOGLE_AD,
-  SELECTOR.VIDEO_LAFTEL_AD,
-  SELECTOR.VIDEO_AD,
-];
+let intervalMuteAdId;
+let intervalWaitingLaftelVideoId;
+let intervalWaitingLaterBtnId;
+let videoLaftelServiceEl;
 
-var intervalObserverId;
-var intervalMuteAdId;
-var observer;
-
-var option = {
+let options = {
   muteAd: true,
+};
+
+/** Get ad video elements */
+const getAdLikeVideos = () => {
+  let adlikeVideos = [];
+
+  if (!videoLaftelServiceEl) return null;
+
+  let currDivEl = videoLaftelServiceEl.nextElementSibling;
+
+  while (currDivEl) {
+    adlikeVideos.push(...currDivEl.querySelectorAll('video'));
+    currDivEl = currDivEl.nextElementSibling;
+  }
+
+  return adlikeVideos.length > 0 ? adlikeVideos : null;
 };
 
 /** Loops over all the videos that need to be muted. */
 const tryMuteAdVideos = muted => {
-  document.querySelectorAll(AD_VIDEO_SELECTOR_LIST.join(',')).forEach(video => {
-    video.muted = muted;
-  });
+  if (intervalMuteAdId) return;
+
+  let tryCnt = 50;
+
+  intervalMuteAdId = setInterval(() => {
+    const adLikeVideos = getAdLikeVideos();
+    printLog('[laftel-ad-autoskipper] try found vidoes ... ');
+
+    if (adLikeVideos) {
+      printLog('[laftel-ad-autoskipper] 광고 감지');
+
+      adLikeVideos.forEach(video => {
+        if (video.readyState == HTMLMediaElement.HAVE_ENOUGH_DATA) {
+          video.muted = muted;
+        } else {
+          video.addEventListener('loadeddata', () => {
+            video.muted = muted;
+          });
+        }
+      });
+
+      if (intervalMuteAdId) {
+        clearInterval(intervalMuteAdId);
+        intervalMuteAdId = null;
+      }
+    }
+
+    if (tryCnt == 0 && intervalMuteAdId) {
+      intervalMuteAdId = null;
+      clearInterval(intervalMuteAdId);
+    }
+  }, 50);
+};
+
+/** 나중에 버튼이 생길때까지 기다렸다가, click the later button. */
+const tryClickLaterBtn = () => {
+  if (intervalWaitingLaterBtnId) return;
+
+  let tryCnt = 5;
+
+  intervalWaitingLaterBtnId = setInterval(() => {
+    tryCnt--;
+
+    for (let btn of document.querySelectorAll('button')) {
+      if (btn.innerHTML == '나중에') {
+        triggerClick(btn);
+
+        tryCnt = 0;
+
+        break;
+      }
+    }
+
+    if (tryCnt == 0 && intervalWaitingLaterBtnId) {
+      clearInterval(intervalMuteAdId);
+      intervalWaitingLaterBtnId = null;
+    }
+  }, 1000);
 };
 
 /** Check if ther later button exists then, click the later button. */
-const tryClickLaterBtn = () => {
-  document.querySelectorAll('button').forEach(el => {
-    if (el.innerHTML == '나중에') triggerClick(el);
-  });
-};
+const initLaftelVideoListener = () => {
+  if (intervalWaitingLaftelVideoId) return;
 
-/** Init the ad video observer */
-const initObserver = () => {
-  if (!('MutationObserver' in window)) return false;
+  intervalWaitingLaftelVideoId = setInterval(() => {
+    videoLaftelServiceEl = document.querySelector(
+      SELECTOR.VIDEO_LAFTEL_SERVICE,
+    );
 
-  let videoLaftelServiceEl = document.querySelector(
-    SELECTOR.VIDEO_LAFTEL_SERVICE,
-  );
+    if (!videoLaftelServiceEl) return;
 
-  if (!videoLaftelServiceEl) return false;
+    if (intervalWaitingLaftelVideoId) {
+      clearInterval(intervalWaitingLaftelVideoId);
+      intervalWaitingLaftelVideoId = null;
+    }
 
-  observer = new MutationObserver(() => {
-    tryClickLaterBtn();
-    tryMuteAdVideos(option.muteAd);
-  });
+    //
+    videoLaftelServiceEl.addEventListener('pause', () => {
+      tryMuteAdVideos(options.muteAd);
+    });
 
-  let videoWapperEl = videoLaftelServiceEl.parentElement;
-  observer.observe(videoWapperEl, { childList: true });
+    // 동영상이 다시 실행할때 종료
+    videoLaftelServiceEl.addEventListener('play', () => {
+      if (intervalMuteAdId) {
+        clearInterval(intervalMuteAdId);
+        intervalMuteAdId = null;
+      }
 
-  // Free observer when document unload
-  window.addEventListener('beforeunload', () => {
-    if (observer) {
-      observer.disconnect();
-      observer = null;
+      tryClickLaterBtn();
+    });
+
+    // 동영상이 로드될 때 실행
+    videoLaftelServiceEl.addEventListener('loadeddata', () => {
+      tryMuteAdVideos(options.muteAd);
+    });
+
+    // 맨 처음에 광고가 나오면 실행
+    if (videoLaftelServiceEl.paused) {
+      tryMuteAdVideos(options.muteAd);
     }
   });
-
-  return true;
-};
-
-/** Loop until the observer is successfully created. */
-const initWatingObserverInterval = () => {
-  intervalObserverId = setInterval(() => {
-    if (initObserver()) {
-      // Stop the polling as the observer is set up.
-      clearInterval(intervalObserverId);
-      intervalObserverId = null;
-    }
-  }, 500);
-
-  // Free interval when document unload
-  window.addEventListener('beforeunload', () => {
-    if (intervalObserverId) clearInterval(intervalObserverId);
-  });
-};
-
-/** Loop try to mute ad */
-const initMuteAdInterval = () => {
-  intervalMuteAdId = setInterval(() => {
-    tryMuteAdVideos(option.muteAd);
-  }, 100);
 };
 
 /** Initialize option's relatives */
@@ -94,12 +145,12 @@ const initOption = async () => {
   // option update handlers
   chrome.runtime.onMessage.addListener((req, sender, sendRes) => {
     if ('muteAd' in req) {
-      option.muteAd = req['muteAd'];
-      tryMuteAdVideos(option.muteAd);
+      options.muteAd = req['muteAd'];
+      tryMuteAdVideos(options.muteAd);
     }
   });
 
-  option.muteAd = await loadOption(['muteAd']);
+  options.muteAd = await loadOption(['muteAd']);
 };
 
 export const main = async () => {
@@ -108,8 +159,7 @@ export const main = async () => {
     /.*:\/\/.*laftel.net\/.*/.test(document.referrer || document.URL) &&
     window.location.hostname == 'laftel.net'
   ) {
+    initLaftelVideoListener();
     await initOption();
-    initWatingObserverInterval();
-    initMuteAdInterval();
   }
 };
