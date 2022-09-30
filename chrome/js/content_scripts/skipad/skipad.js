@@ -1,7 +1,6 @@
 import { triggerClick } from '../../utils/click.js';
 
 const SELECTOR = {
-  BTN_SKIP_GOOGLE_AD_WRAPPER: 'div.videoAdUiBottomBar',
   BTN_SKIP_GOOGLE_AD: 'button.videoAdUiSkipButton',
 };
 
@@ -18,17 +17,15 @@ const tryClickSkipBtn = () => {
 const initObserver = () => {
   if (!('MutationObserver' in window)) return false;
 
-  let skipBtnWapper = document.querySelector(
-    SELECTOR.BTN_SKIP_GOOGLE_AD_WRAPPER,
-  );
+  let htmlEl = document.querySelector('html');
 
-  if (!skipBtnWapper) return false;
+  if (!htmlEl) return false;
 
   observer = new MutationObserver(() => {
     tryClickSkipBtn();
   });
 
-  observer.observe(skipBtnWapper, { childList: true, subtree: true });
+  observer.observe(htmlEl, { childList: true, subtree: true });
 
   // Free observer when document unload
   window.addEventListener('beforeunload', () => {
